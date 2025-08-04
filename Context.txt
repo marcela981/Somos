@@ -1,0 +1,289 @@
+Estructura General de la Aplicación Fitness con IA
+Esta es una propuesta de cómo organizar la aplicación en diferentes páginas o secciones, cada una con un propósito claro.
+
+1. Onboarding y Configuración Inicial (El Punto de Partida)
+Este es el primer flujo que verán al usar la aplicación. Es crucial para que la IA tenga la información base para empezar a personalizar la experiencia.
+
+Creación de Perfiles: Un inicio de sesión simple para ti y otro para tu novia. La app debe poder cambiar fácilmente entre perfiles.
+
+Cuestionario Inicial Detallado:
+
+Definición de Objetivo Principal: Un menú desplegable claro donde elijan su meta principal. Esto es clave para la IA.
+
+Opciones: Bajar de peso, Tonificar, Aumentar masa muscular, Aumentar fuerza, Bajar de peso y tonificar (recomposición corporal), Bajar de peso y aumentar fuerza, Subir de peso y ganar músculo, etc.
+
+Datos Antropométricos:
+
+Edad, peso inicial, altura.
+
+Medidas corporales: Cuello, pecho, cintura, caderas, bíceps (relajado y contraído), muslos. Esto es más preciso que solo el peso para medir progreso en tonificación o ganancia muscular.
+
+Nivel de Experiencia:
+
+Principiante (nunca o casi nunca he entrenado).
+
+Intermedio (he entrenado antes, conozco los ejercicios básicos).
+
+Avanzado (entreno de forma consistente).
+
+Equipamiento Disponible (¡Solución a la Pereza!):
+
+Esta es la sección más importante para combatir tu falencia. El usuario debe poder marcar qué tiene disponible:
+
+[ ] Solo mi cuerpo (calistenia).
+
+[ ] Bandas de resistencia.
+
+[ ] Mancuernas (y especificar rangos de peso).
+
+[ ] Barra de dominadas.
+
+[ ] Acceso a gimnasio completo.
+
+La IA usará esta información para generar rutinas que puedas hacer en casa, eliminando la excusa del desplazamiento.
+
+Preferencias y Limitaciones:
+
+¿Qué tipo de ejercicio disfrutas? (Pesas, cardio, HIIT, yoga).
+
+¿Tienes alguna lesión o limitación física?
+
+2. Dashboard / Panel Principal (Tu Resumen Diario)
+Esta es la pantalla de inicio que verás cada día. Debe ser motivadora y directa.
+
+"Tu Misión de Hoy": Muestra el entrenamiento programado para el día. Ej: "Hoy: Tren Superior y Fuerza. ¡Vamos!".
+
+Accesos Rápidos: Botones grandes para las acciones más comunes:
+
+[ Iniciar Entrenamiento de Hoy ]
+
+[ Registrar Peso y Medidas ]
+
+[ Registrar Calorías ]
+
+Resumen de Progreso Clave:
+
+Gráfico simple con la evolución del peso en la última semana.
+
+Contador de racha: "¡Llevas 5 días seguidos cumpliendo tus metas!".
+
+Tip del Día (Potenciado por IA): Un consejo corto y útil basado en tus datos. Ej: "Veo que no has descansado bien. Recuerda que el músculo crece en el descanso, no solo en el gym."
+
+3. Mi Plan (El Cerebro de la Operación)
+Aquí es donde la IA brilla, creando y ajustando tu camino hacia el éxito.
+
+Página de Rutina de Entrenamiento:
+
+Vista Semanal: Un calendario que muestra qué días entrenas y qué días descansas. La IA define la frecuencia (ej: 4 días/semana) según tu objetivo y nivel.
+
+Vista Diaria Detallada:
+
+Lista de ejercicios del día.
+
+Para cada ejercicio:
+
+Nombre y GIF/Video corto: Muestra cómo se hace correctamente.
+
+Series, Repeticiones y Descanso: Ej: "4 series de 10 repeticiones, 60s de descanso".
+
+Botón "Alternativa en Casa": Si un ejercicio requiere una máquina de gym, la IA te sugiere una alternativa efectiva con el equipo que marcaste tener. ¡Esta es tu arma secreta contra la pereza!
+
+Opción de "Feedback": Un botón de pulgar arriba/abajo para que indiques si te gustó o te costó mucho un ejercicio, para que la IA aprenda.
+
+Integración de Cardio y Deporte:
+
+Opción para añadir sesiones de cardio (correr, bici) o marcar que hoy toca un entrenamiento de tu deporte elegido (ver apartado 5).
+
+Guía Nutricional Flexible:
+
+Objetivos de Calorías y Macronutrientes: La IA calcula tus necesidades diarias de proteínas, carbohidratos y grasas.
+
+Registro de Calorías: Un campo simple para que anotes las calorías que consumes. Puedes empezar con un número aproximado.
+
+Registro de Agua: Un tracker visual para asegurar que te hidratas bien.
+
+4. Mi Progreso (El Espejo de tu Esfuerzo)
+Visualizar tus logros es fundamental para la motivación.
+
+Registro Histórico: Un lugar para ver todos tus registros de peso, medidas y calorías a lo largo del tiempo.
+
+Gráficos Interactivos:
+
+Curva de evolución de peso con una línea de tendencia y predicción de la IA. Ej: "A este ritmo, alcanzarás tu peso objetivo de 80kg aproximadamente el 15 de diciembre".
+
+Gráficos para cada medida corporal (cintura, pecho, etc.).
+
+Análisis de Rendimiento por la IA:
+
+Detección de Estancamiento: Si la IA detecta que tu peso o medidas no han cambiado en 2-3 semanas a pesar de registrar entrenamientos, te alertará: "Parece que hemos llegado a una meseta. ¿Qué te parece si probamos a aumentar la intensidad o cambiar algunos ejercicios para sorprender a tus músculos?".
+
+Informe Semanal Automático: Un resumen generado por la IA cada domingo: "Esta semana has completado 4/4 entrenamientos, ¡felicidades! Tu fuerza en press de banca ha mejorado. Sigue así."
+
+5. Academia Deportiva (Mejora tus Habilidades)
+Este es el apartado para entrenar un deporte específico, como mencionaste.
+
+Selección de Deporte: Eliges uno de la lista (fútbol, baloncesto, boxeo, salto de cuerda, etc.).
+
+Plan de Habilidades (Generado por IA):
+
+La IA te propone drills y ejercicios de acondicionamiento específicos para ese deporte.
+
+Ejemplo para Fútbol: "Para mejorar tu control de balón: 15 minutos de toques cortos. Para la potencia de disparo: 3 series de 12 sentadillas con salto".
+
+Ejemplo para Salto de Cuerda: "Hoy practicaremos saltos dobles. Intenta hacer 5 seguidos. Aquí tienes un video tutorial".
+
+Seguimiento de Habilidades: Un espacio para anotar tus récords personales (ej: "Número de dominadas seguidas", "Tiempo en 1km", etc.).
+
+6. Centro de Motivación y Disciplina (Tu Coach Mental)
+Este apartado está diseñado específicamente para atacar las barreras mentales.
+
+Compromiso de Pareja (Accountability Partner):
+
+Una sección compartida donde puedes ver si tu novia completó su entrenamiento del día (sin ver detalles de peso o medidas, solo un "¡Check! ✅").
+
+Pueden enviarse "choques de puño" virtuales o mensajes de ánimo.
+
+El Reto de los 5 Minutos:
+
+¿Sientes pereza? Presiona este botón. La app te lanzará un calentamiento o una rutina muy corta de 5 minutos. La ciencia dice que una vez que empiezas, es mucho más fácil continuar.
+
+Recordatorios de tu "Porqué":
+
+Durante el onboarding, escribes por qué quieres lograr este cambio. La app te mostrará este recordatorio en momentos clave, como cuando te saltas un entrenamiento.
+
+Sistema de Logros y Recompensas:
+
+Desbloquea medallas virtuales por hitos: "Primeros 5kg perdidos", "Mes completo de entrenamiento", "Nuevo récord en sentadilla".
+
+Con esta estructura, tendrás una base sólida para construir una aplicación que no solo te dé un plan, sino que te entienda, se adapte a ti y te ayude a superar las barreras reales que te impiden alcanzar tus objetivos.
+
+Arquitectura General: Frontend Desacoplado con Backend "Serverless"
+La filosofía de esta arquitectura es separar completamente la presentación (lo que ves y con lo que interactúas en el navegador) de la lógica y los datos. Esto se logra teniendo un frontend construido con HTML, CSS, JavaScript, react o angular que se comunica con un backend montado enteramente en los servicios de Google.
+
+Diagrama de la Arquitectura
+Para que sea más fácil de visualizar, aquí tienes un diagrama de cómo fluye la información:
+
+      [ Usuario ]
+          ↑ ↓
++-------------------------+      +---------------------------------+      +--------------------------------+
+|    Frontend (Cliente)   |      |      Backend (API Gateway)      |      |     Base de Datos y Lógica     |
+|-------------------------|      |---------------------------------|      |--------------------------------|
+|   - HTML5 (Estructura)  |      |                                 |      |   [ Base de Datos ]            |
+|   - CSS3 (Estilos)      |----->|   Google Apps Script (Web App)  |----->|   - Google Sheets              |
+|   - JavaScript (Lógica) |      |   (actúa como nuestra API)      |      |                                |
+|                         |<-----|                                 |<-----|   [ Inteligencia Artificial ]  |
+|                         |      |                                 |----->|   - API de Gemini (Google AI)  |
++-------------------------+      +---------------------------------+      +--------------------------------+
+
+1. El Frontend (Lo que ve el usuario)
+Esta es la aplicación web que se ejecuta en tu navegador. Será una Single Page Application (SPA) o "Aplicación de una Sola Página". Esto no significa que todo esté en un archivo, sino que el usuario no tendrá que recargar la página para navegar entre el Dashboard, Mi Plan, etc., lo que da una experiencia más fluida y moderna.
+
+Tecnologías:
+
+HTML5: Para una estructura semántica y accesible. Tendrás un index.html principal y el contenido de las diferentes secciones (Dashboard, Progreso, etc.) se cargará dinámicamente con JS.
+
+CSS3: Para los estilos. Te recomiendo usar variables CSS para manejar fácilmente los colores y espaciados. Puedes organizar tus estilos por componentes (ej. button.css, card.css, layout.css) para que sea más legible.
+
+JavaScript (ES6+): El motor de la aplicación. Aquí es donde residirá toda la lógica de la interfaz.
+
+Estructura de Carpetas Sugerida:
+
+/mi-app-fitness/
+|-- index.html
+|-- /assets/
+|   |-- images/
+|   |-- icons/
+|-- /css/
+|   |-- main.css
+|   |-- components/
+|       |-- dashboard.css
+|       |-- plan.css
+|-- /js/
+    |-- main.js         // Archivo principal que inicializa todo
+    |-- router.js       // Un pequeño router para manejar las "páginas"
+    |-- api.js          // CENTRALIZA todas las llamadas al backend
+    |-- ui.js           // Funciones para manipular el DOM (mostrar/ocultar vistas)
+    |-- /sections/
+        |-- dashboard.js  // Lógica específica del Dashboard
+        |-- plan.js       // Lógica de "Mi Plan"
+        |-- progress.js   // Lógica de "Mi Progreso"
+
+Innovación Clave (api.js): Crear un archivo api.js es una práctica profesional. Este archivo será el único lugar en tu código que sabe cómo hablar con el backend. Por ejemplo, si necesitas los datos del usuario, desde dashboard.js llamarías a una función como api.getUserData(), en lugar de hacer un fetch directamente. Si en el futuro cambias de Google Sheets a otra base de datos, solo tendrías que modificar api.js y el resto de tu app seguiría funcionando.
+
+2. El Backend (El cerebro en la nube)
+Aquí es donde ocurre la magia. Usaremos Google Apps Script como si fuera nuestro servidor y API. Es una solución "serverless" porque no tienes que preocuparte por servidores, solo por el código.
+
+Tecnología: Google Apps Script (que es básicamente JavaScript en el entorno de Google).
+
+Implementación:
+
+Creas un nuevo proyecto de Apps Script vinculado a tu Google Sheet.
+
+Escribes funciones para manejar las peticiones de tu frontend. Las funciones clave son doGet(e) para peticiones de lectura (obtener datos) y doPost(e) para peticiones de escritura (guardar datos).
+
+Despliegas el script como "Aplicación Web". Esto te dará una URL única. ¡Esa URL es tu API! Tu frontend hará peticiones fetch a esa URL.
+
+Ejemplo de función en Apps Script:
+
+// En tu proyecto de Google Apps Script
+const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('DailyLog');
+
+function doPost(e) {
+  // 1. Parsea los datos que vienen del frontend
+  const data = JSON.parse(e.postData.contents);
+
+  // 2. Guarda los datos en la hoja de cálculo
+  sheet.appendRow([
+    new Date(),
+    data.userId, // Identificador del usuario
+    data.weight,
+    data.calories
+  ]);
+
+  // 3. Devuelve una respuesta de éxito al frontend
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'success', message: 'Datos guardados' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+3. La Base de Datos (El almacén de datos)
+Simple, visual y potente para este caso de uso.
+
+Tecnología: Google Sheets.
+
+Estructura: Dentro de un único archivo de Google Sheets, tendrás varias hojas:
+
+Users: userId, name, goal, experienceLevel, equipment (JSON como texto), etc.
+
+DailyLog: timestamp, userId, weight, bodyFat, calories, waterIntake. Una fila por día por usuario.
+
+Workouts: timestamp, userId, exerciseName, sets, reps, weightLifted, feedback.
+
+AISuggestions: timestamp, userId, prompt, aiResponse. Para guardar un historial de las recomendaciones de la IA.
+
+4. La Inteligencia Artificial (La chispa de innovación)
+La integración con la IA (Gemini) se hará desde el backend para mantener tu clave de API segura y para poder enriquecer las peticiones con datos históricos del usuario.
+
+Flujo de una Petición a la IA:
+
+Frontend: El usuario pide una recomendación. El JS del frontend recopila el contexto actual (ej: "Objetivo: tonificar, Equipo: mancuernas, Feedback del último entreno: muy fácil") y lo envía al backend de Apps Script.
+
+Backend (Apps Script):
+
+Recibe la petición.
+
+Consulta la hoja Users y DailyLog para obtener más contexto (peso actual, progreso, etc.).
+
+Construye un prompt detallado y potente para la API de Gemini.
+
+Usa el servicio UrlFetchApp.fetch() de Apps Script para hacer la llamada a la API de Gemini.
+
+Recibe la respuesta de la IA.
+
+La guarda en la hoja AISuggestions para tu registro.
+
+Devuelve la respuesta limpia al frontend.
+
+Frontend: Recibe la recomendación y la muestra al usuario de forma atractiva.
+
+Esta arquitectura te da una base sólida y profesional. Es perfecta para un proyecto de portafolio porque demuestra que entiendes la separación de concerns, el flujo de datos asíncrono y cómo integrar diferentes servicios (APIs) para construir una aplicación completa y funcional.
