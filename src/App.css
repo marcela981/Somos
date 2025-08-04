@@ -11,9 +11,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--background);
   min-height: 100vh;
-  color: #333;
+  color: var(--text);
 }
 
 code {
@@ -24,15 +24,12 @@ code {
 /* Contenedor principal */
 .App {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  background: var(--background);
 }
 
 /* Estilos para enlaces */
 a {
-  color: #6366f1;
+  color: var(--accent-primary);
   text-decoration: none;
 }
 

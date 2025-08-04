@@ -5,9 +5,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Asegurar que el tema se aplique globalmente */
+#root {
+  background-color: var(--background);
+  min-height: 100vh;
+}
+
+.App {
+  background-color: var(--background);
+  min-height: 100vh;
 }

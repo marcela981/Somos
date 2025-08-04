@@ -1,0 +1,259 @@
+/* Global Theme Variables and Styles */
+
+/* Variables CSS por defecto */
+:root {
+  /* Tema oscuro por defecto */
+  --background: #1a1a2e;
+  --surface: #16213e;
+  --primary: #ffffff;
+  --secondary: #0f3460;
+  --text: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: rgba(0, 0, 0, 0.3);
+  --overlay: rgba(0, 0, 0, 0.8);
+  --card: rgba(255, 255, 255, 0.08);
+  --card-hover: rgba(255, 255, 255, 0.12);
+  
+  /* Color de acento naranja por defecto */
+  --accent-primary: #ff6b6b;
+  --accent-secondary: #ffa726;
+  --accent-tertiary: #ff7043;
+  --accent-gradient: linear-gradient(45deg, #ff6b6b, #ffa726);
+  --accent-light: #ffcdd2;
+  --accent-dark: #d32f2f;
+}
+
+/* Transiciones suaves para cambios de tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos específicos para modo claro */
+.theme-light {
+  --background: #ffffff;
+  --surface: #f8f9fa;
+  --primary: #1a1a2e;
+  --secondary: #16213e;
+  --text: #333333;
+  --text-secondary: #666666;
+  --border: #e0e0e0;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --overlay: rgba(255, 255, 255, 0.9);
+  --card: #ffffff;
+  --card-hover: #f5f5f5;
+}
+
+/* Estilos específicos para modo oscuro */
+.theme-dark {
+  --background: #1a1a2e;
+  --surface: #16213e;
+  --primary: #ffffff;
+  --secondary: #0f3460;
+  --text: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: rgba(0, 0, 0, 0.3);
+  --overlay: rgba(0, 0, 0, 0.8);
+  --card: rgba(255, 255, 255, 0.08);
+  --card-hover: rgba(255, 255, 255, 0.12);
+}
+
+/* Aplicar variables a elementos globales */
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Estilos para elementos que usan el color de acento */
+.accent-bg {
+  background: var(--accent-gradient);
+}
+
+.accent-text {
+  color: var(--accent-primary);
+}
+
+.accent-border {
+  border-color: var(--accent-primary);
+}
+
+.accent-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Clases utilitarias para colores de acento */
+.accent-orange {
+  --accent-primary: #ff6b6b;
+  --accent-secondary: #ffa726;
+  --accent-tertiary: #ff7043;
+  --accent-gradient: linear-gradient(45deg, #ff6b6b, #ffa726);
+  --accent-light: #ffcdd2;
+  --accent-dark: #d32f2f;
+}
+
+.accent-purple {
+  --accent-primary: #9c27b0;
+  --accent-secondary: #ba68c8;
+  --accent-tertiary: #7b1fa2;
+  --accent-gradient: linear-gradient(45deg, #9c27b0, #ba68c8);
+  --accent-light: #e1bee7;
+  --accent-dark: #6a1b9a;
+}
+
+.accent-cyan {
+  --accent-primary: #00bcd4;
+  --accent-secondary: #4dd0e1;
+  --accent-tertiary: #0097a7;
+  --accent-gradient: linear-gradient(45deg, #00bcd4, #4dd0e1);
+  --accent-light: #b2ebf2;
+  --accent-dark: #006064;
+}
+
+.accent-lime {
+  --accent-primary: #cddc39;
+  --accent-secondary: #d4e157;
+  --accent-tertiary: #afb42b;
+  --accent-gradient: linear-gradient(45deg, #cddc39, #d4e157);
+  --accent-light: #f0f4c3;
+  --accent-dark: #827717;
+}
+
+.accent-red {
+  --accent-primary: #f44336;
+  --accent-secondary: #ef5350;
+  --accent-tertiary: #d32f2f;
+  --accent-gradient: linear-gradient(45deg, #f44336, #ef5350);
+  --accent-light: #ffcdd2;
+  --accent-dark: #b71c1c;
+}
+
+.accent-gray {
+  --accent-primary: #757575;
+  --accent-secondary: #9e9e9e;
+  --accent-tertiary: #616161;
+  --accent-gradient: linear-gradient(45deg, #757575, #9e9e9e);
+  --accent-light: #eeeeee;
+  --accent-dark: #424242;
+}
+
+/* Animaciones para cambios de tema */
+@keyframes themeTransition {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.theme-transition {
+  animation: themeTransition 0.3s ease-out;
+}
+
+/* Estilos para elementos que necesitan transiciones especiales */
+button, input, select, textarea {
+  transition: all 0.2s ease;
+}
+
+/* Estilos para elementos de interfaz que usan el tema */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
+  backdrop-filter: blur(8px);
+}
+
+.card:hover {
+  background: var(--card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.button-primary {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.button-secondary {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button-secondary:hover {
+  background: var(--card-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Estilos para texto y elementos de texto */
+.text-primary {
+  color: var(--text);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-accent {
+  color: var(--accent-primary);
+}
+
+/* Estilos para bordes y separadores */
+.border {
+  border: 1px solid var(--border);
+}
+
+.border-accent {
+  border-color: var(--accent-primary);
+}
+
+/* Estilos para sombras */
+.shadow {
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.shadow-accent {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para fondos */
+.bg-primary {
+  background: var(--background);
+}
+
+.bg-surface {
+  background: var(--surface);
+}
+
+.bg-card {
+  background: var(--card);
+}
+
+.bg-accent {
+  background: var(--accent-gradient);
+} 
