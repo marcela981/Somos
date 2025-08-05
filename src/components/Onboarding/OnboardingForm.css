@@ -9,9 +9,9 @@
   --background-light: #f9fafb;
   --background-white: #ffffff;
   --border-color: #e5e7eb;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
   --transition: all 0.3s ease;
 }
@@ -125,7 +125,7 @@
 .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .form-group input::placeholder,
@@ -167,7 +167,7 @@
 
 .checkbox-label:hover {
   border-color: var(--primary-color);
-  background: rgb(99 102 241 / 0.05);
+  background: rgba(99, 102, 241, 0.05);
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -457,7 +457,7 @@
 .symptoms-grid .checkbox-label input[type="checkbox"]:checked + span {
   color: #007bff;
   font-weight: 500;
-} */
+}
 
 
 /* Estilos para el deporte favorito */
