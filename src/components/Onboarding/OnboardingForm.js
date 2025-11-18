@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import apiService from '../../services/api';
 import { SECONDARY_GOALS } from '../../config/api.config';
+import GoalSelector from './GoalSelector';
+import SportForm from './SportForm';
+import SexualPerformanceForm from './SexualPerformanceForm';
+import { GOAL_SUGGESTIONS, GOAL_CONFLICTS, GOAL_IDS, hasConflict, getGoalById } from '../../data/goals.config';
 import './OnboardingForm.css';
 
 const OnboardingForm = () => {
@@ -9,11 +13,16 @@ const OnboardingForm = () => {
     // Perfil
     profileName: '',
     
-    // Objetivo principal
-    mainGoal: '',
+    // Metas (nuevo sistema)
+    goals: {
+      primary: '',   // GoalId
+      secondary: '', // GoalId | ''
+      tertiary: ''   // GoalId | ''
+    },
     
-    // Metas adicionales
-    additionalGoals: [],
+    // Mantener compatibilidad con registros previos
+    mainGoal: '', // Se mantiene para compatibilidad
+    additionalGoals: [], // Se mantiene para compatibilidad
     
          // Datos antropométricos
      gender: '',
@@ -59,18 +68,127 @@ const OnboardingForm = () => {
      // :::::::::::::::::::::::::::: Fin de implementación ::::::::::::::::::::::::::::
      
      // Motivación
-     motivation: ''
+     motivation: '',
+     
+     // Rehabilitación
+     rehab: {
+       bodyPart: '',
+       specificInjury: '',
+       severity: '',
+       timeSince: {
+         value: '',
+         unit: 'días'
+       },
+       side: '',
+       dominantSide: '',
+       painNRS: 0,
+       swelling: false,
+       romLimitation: '',
+       instability: '',
+       functionalLimits: [],
+       medicalIndications: '',
+       details: '',
+       redFlags: [],
+       hasMedicalClearance: false,
+       notice: ''
+     },
+     
+     // Deporte específico
+     sport: {
+       sportId: '',
+       sportOther: '',
+       discipline: '',
+       level: '',
+       roleOrCategory: '',
+       peakTargetDate: '',
+       sessionsPerWeek: 3,
+       availableEquipment: [],
+       preferredDays: [],
+       previousInjuries: '',
+       constraints: '',
+       metricsFocus: [],
+       notes: ''
+     },
+     
+     // Rendimiento sexual
+     sexual: {
+       focusAreas: [],
+       sessionsPerWeek: 2,
+       notes: '',
+       privacyOk: false,
+       redFlags: []
+     }
   });
 
-  const goals = [
-    'Reducción del Tejido Adiposo (Pérdida de Grasa)',
-    'Hipertrofia Muscular (Aumento de Masa Muscular)',
-    'Adaptaciones Neurales y Aumento de la Fuerza Máxima',
-    'Recomposición Corporal',
-    'Mejora de la Resistencia (Muscular y/o Cardiovascular)',
-    'Mejora de la Potencia (Entrenamiento de Potencia)',
-    'Mejora de la Movilidad y Flexibilidad',
-  ];
+  // Calcular sugerencias dinámicas para Meta 2 y Meta 3
+  const suggestionForMeta2 = useMemo(() => {
+    if (formData.goals.primary && GOAL_SUGGESTIONS[formData.goals.primary]) {
+      return GOAL_SUGGESTIONS[formData.goals.primary][0];
+    }
+    return undefined;
+  }, [formData.goals.primary]);
+
+  const suggestionForMeta3 = useMemo(() => {
+    if (formData.goals.secondary && GOAL_SUGGESTIONS[formData.goals.secondary]) {
+      return GOAL_SUGGESTIONS[formData.goals.secondary][0];
+    }
+    if (formData.goals.primary && GOAL_SUGGESTIONS[formData.goals.primary]) {
+      return GOAL_SUGGESTIONS[formData.goals.primary][1];
+    }
+    return undefined;
+  }, [formData.goals.primary, formData.goals.secondary]);
+
+  // Verificar si hay conflicto entre metas
+  const hasGoalConflict = useMemo(() => {
+    const { primary, secondary, tertiary } = formData.goals;
+    return hasConflict(primary, secondary) || 
+           hasConflict(primary, tertiary) || 
+           hasConflict(secondary, tertiary);
+  }, [formData.goals]);
+
+  // Verificar si alguna meta es rehabilitación
+  const hasRehabGoal = useMemo(() => {
+    return formData.goals.primary === GOAL_IDS.REHAB ||
+           formData.goals.secondary === GOAL_IDS.REHAB ||
+           formData.goals.tertiary === GOAL_IDS.REHAB;
+  }, [formData.goals]);
+
+  // Conflictos suaves (avisos no bloqueantes)
+  const softConflicts = useMemo(() => {
+    const conflicts = [];
+    const { primary, secondary, tertiary } = formData.goals;
+    const allGoals = [primary, secondary, tertiary].filter(Boolean);
+
+    // fat_loss vs muscle_gain
+    if ((allGoals.includes('fat_loss') && allGoals.includes('muscle_gain')) ||
+        (allGoals.includes('muscle_gain') && allGoals.includes('fat_loss'))) {
+      conflicts.push('Estas metas pueden competir entre sí. Te recomendaremos micro-ciclos y métricas realistas.');
+    }
+
+    // rehab severa/moderada con sport_specific
+    if (allGoals.includes('sport_specific') && hasRehabGoal) {
+      const severity = formData.rehab?.severity;
+      if (severity === 'severa' || severity === 'moderada') {
+        conflicts.push('Si estás en fase de lesión moderada/severa, prioriza rehabilitación antes del trabajo específico de alto impacto.');
+      }
+    }
+
+    return conflicts;
+  }, [formData.goals, formData.rehab, hasRehabGoal]);
+
+  // Verificar si alguna meta es deporte específico
+  const hasSportGoal = useMemo(() => {
+    return formData.goals.primary === GOAL_IDS.SPORT_SPECIFIC ||
+           formData.goals.secondary === GOAL_IDS.SPORT_SPECIFIC ||
+           formData.goals.tertiary === GOAL_IDS.SPORT_SPECIFIC;
+  }, [formData.goals]);
+
+  // Verificar si alguna meta es rendimiento sexual
+  const hasSexualGoal = useMemo(() => {
+    return formData.goals.primary === GOAL_IDS.SEXUAL_PERFORMANCE ||
+           formData.goals.secondary === GOAL_IDS.SEXUAL_PERFORMANCE ||
+           formData.goals.tertiary === GOAL_IDS.SEXUAL_PERFORMANCE;
+  }, [formData.goals]);
 
   const experienceLevels = [
     'Principiante (nunca o casi nunca he entrenado)',
@@ -121,6 +239,39 @@ const OnboardingForm = () => {
      'Otro'
    ];
 
+   // Opciones para rehab
+   const bodyPartOptions = [
+     { value: 'tobillo', label: 'Tobillo' },
+     { value: 'rodilla', label: 'Rodilla' },
+     { value: 'muñeca', label: 'Muñeca' },
+     { value: 'hombro', label: 'Hombro' },
+     { value: 'otro', label: 'Otro' }
+   ];
+
+   const severityOptions = ['leve', 'moderada', 'severa'];
+   const timeUnitOptions = ['días', 'semanas', 'meses'];
+   const sideOptions = ['izquierda', 'derecha', 'ambas'];
+   const dominantSideOptions = ['izquierda', 'derecha'];
+   const romLimitationOptions = ['ninguna', 'leve', 'moderada', 'severa'];
+   const instabilityOptions = ['no', 'leve', 'moderada', 'severa'];
+   const functionalLimitsOptions = [
+     'Caminar >15min',
+     'Correr',
+     'Saltar',
+     'Subir/bajar escaleras',
+     'Empujar/empujes',
+     'Tracciones',
+     'Cargar >5kg'
+   ];
+   const redFlagsOptions = [
+     'Dolor nocturno intenso o progresivo',
+     'Pérdida de fuerza/sensibilidad',
+     'Bloqueo articular',
+     'Fiebre o signos de infección',
+     'Deformidad evidente',
+     'Trauma de alta energía'
+   ];
+
    //  :::::::::::::::::::::::::::: Implementación menstruación :::::::::::::::::::::::::::: 
    // const periodSymptoms = [
    //   'Cólicos menstruales',
@@ -145,6 +296,16 @@ const OnboardingForm = () => {
     }));
   };
 
+  const handleGoalChange = (goalType, goalId) => {
+    setFormData(prev => ({
+      ...prev,
+      goals: {
+        ...prev.goals,
+        [goalType]: goalId
+      }
+    }));
+  };
+
   const handleEquipmentChange = (equipment, checked) => {
     setFormData(prev => ({
       ...prev,
@@ -161,6 +322,96 @@ const OnboardingForm = () => {
       exercisePreferences: checked 
         ? [...prev.exercisePreferences, preference]
         : prev.exercisePreferences.filter(p => p !== preference)
+    }));
+  };
+
+  // Handlers para rehab
+  const handleRehabChange = (field, value) => {
+    // Caso especial para bodyPart "otro"
+    if (field === 'bodyPart' && value === 'otro') {
+      setFormData(prev => ({
+        ...prev,
+        rehab: {
+          ...prev.rehab,
+          bodyPart: '',
+          notice: 'No disponible en este momento.'
+        }
+      }));
+      return;
+    }
+    
+    // Si cambia bodyPart a un valor válido, limpiar notice
+    if (field === 'bodyPart' && value !== 'otro') {
+      setFormData(prev => ({
+        ...prev,
+        rehab: {
+          ...prev.rehab,
+          [field]: value,
+          notice: ''
+        }
+      }));
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      rehab: {
+        ...prev.rehab,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleRehabNestedChange = (path, value) => {
+    setFormData(prev => ({
+      ...prev,
+      rehab: {
+        ...prev.rehab,
+        [path]: {
+          ...prev.rehab[path],
+          ...value
+        }
+      }
+    }));
+  };
+
+  const handleFunctionalLimitsChange = (opt, checked) => {
+    setFormData(prev => ({
+      ...prev,
+      rehab: {
+        ...prev.rehab,
+        functionalLimits: checked 
+          ? [...prev.rehab.functionalLimits, opt]
+          : prev.rehab.functionalLimits.filter(f => f !== opt)
+      }
+    }));
+  };
+
+  const handleRedFlagsChange = (opt, checked) => {
+    setFormData(prev => ({
+      ...prev,
+      rehab: {
+        ...prev.rehab,
+        redFlags: checked 
+          ? [...prev.rehab.redFlags, opt]
+          : prev.rehab.redFlags.filter(r => r !== opt)
+      }
+    }));
+  };
+
+  // Handlers para sport
+  const handleSportChange = (sportData) => {
+    setFormData(prev => ({
+      ...prev,
+      sport: sportData
+    }));
+  };
+
+  // Handlers para sexual performance
+  const handleSexualChange = (sexualData) => {
+    setFormData(prev => ({
+      ...prev,
+      sexual: sexualData
     }));
   };
 
@@ -226,16 +477,123 @@ const OnboardingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
+  // Validación para rehab
+  const isRehabValid = () => {
+    if (!hasRehabGoal) {
+      return true; // No requiere validación si no hay meta de rehabilitación
+    }
+
+    const validBodyParts = ['tobillo', 'rodilla', 'muñeca', 'hombro'];
+    const hasValidBodyPart = validBodyParts.includes(formData.rehab.bodyPart);
+    const hasSeverity = formData.rehab.severity !== '';
+    const hasTimeSince = formData.rehab.timeSince.value !== '' && parseInt(formData.rehab.timeSince.value) > 0;
+    const hasMedicalClearance = formData.rehab.hasMedicalClearance === true;
+    const hasNoRedFlags = formData.rehab.redFlags.length === 0;
+
+    return hasValidBodyPart && hasSeverity && hasTimeSince && hasMedicalClearance && hasNoRedFlags;
+  };
+
+  // Validación para sport
+  const isSportValid = () => {
+    if (!hasSportGoal) {
+      return true; // No requiere validación si no hay meta de deporte
+    }
+
+    // sportId es requerido
+    if (!formData.sport.sportId || formData.sport.sportId.trim() === '') {
+      return false;
+    }
+
+    // Si es "other", sportOther es requerido (min 3 caracteres)
+    if (formData.sport.sportId === 'other') {
+      return formData.sport.sportOther && formData.sport.sportOther.trim().length >= 3;
+    }
+
+    // Validar sessionsPerWeek si se proporciona (1-14)
+    if (formData.sport.sessionsPerWeek !== undefined && formData.sport.sessionsPerWeek !== null) {
+      const sessions = parseInt(formData.sport.sessionsPerWeek);
+      if (isNaN(sessions) || sessions < 1 || sessions > 14) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // Validación para sexual performance
+  const isSexualValid = () => {
+    if (!hasSexualGoal) {
+      return true; // No requiere validación si no hay meta de rendimiento sexual
+    }
+
+    // focusAreas debe tener al menos 1 elemento
+    const hasFocusAreas = formData.sexual.focusAreas && formData.sexual.focusAreas.length > 0;
+    if (!hasFocusAreas) {
+      return false;
+    }
+
+    // privacyOk es requerido
+    if (formData.sexual.privacyOk !== true) {
+      return false;
+    }
+
+    // Validar sessionsPerWeek si se proporciona (1-10)
+    if (formData.sexual.sessionsPerWeek !== undefined && formData.sexual.sessionsPerWeek !== null) {
+      const sessions = parseInt(formData.sexual.sessionsPerWeek);
+      if (isNaN(sessions) || sessions < 1 || sessions > 10) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitMessage('');
     
     try {
+      // Validar red flags antes de enviar
+      if (hasRehabGoal && formData.rehab.redFlags.length > 0) {
+        setSubmitMessage('No se puede continuar con signos de alarma detectados. Por favor, consulta con un profesional de salud.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Red flags en sexual performance son advertencias no bloqueantes (solo warning)
+      // No bloqueamos el envío, pero generamos un warning
+
       // Preparar datos para enviar
+      const profileId = formData.profileId || `profile_${Date.now()}`;
       const onboardingData = {
-        ...formData,
-        createdAt: new Date().toISOString(),
-        profileId: `profile_${Date.now()}` // Generar ID único
+        profileId,
+        goals: {
+          primary: formData.goals.primary,
+          secondary: formData.goals.secondary || null,
+          tertiary: formData.goals.tertiary || null
+        },
+        rehab: hasRehabGoal ? formData.rehab : null,
+        sport: hasSportGoal ? formData.sport : null,
+        sexual: hasSexualGoal ? formData.sexual : null,
+        // Mantener compatibilidad: mapear goals a mainGoal y additionalGoals
+        mainGoal: formData.goals.primary || formData.mainGoal,
+        additionalGoals: [
+          formData.goals.secondary,
+          formData.goals.tertiary
+        ].filter(Boolean).map(goalId => ({ goal: goalId })),
+        // Incluir otros campos del formulario
+        profileName: formData.profileName,
+        gender: formData.gender,
+        age: formData.age,
+        initialWeight: formData.initialWeight,
+        height: formData.height,
+        experienceLevel: formData.experienceLevel,
+        equipment: formData.equipment,
+        exercisePreferences: formData.exercisePreferences,
+        injuries: formData.injuries,
+        favoriteSport: formData.favoriteSport,
+        motivation: formData.motivation,
+        createdAt: new Date().toISOString()
       };
 
       // Enviar datos al backend
@@ -285,77 +643,290 @@ const OnboardingForm = () => {
       case 1:
         return (
           <div className="step-container">
-            <h2>¿Cuál es tu objetivo principal?</h2>
-            <p>Esta información es clave para que la IA personalice tu plan de entrenamiento.</p>
+            <h2>Selecciona tus metas</h2>
+            <p>Elige hasta 3 metas. La Meta 1 es obligatoria, las otras dos son opcionales pero recomendadas.</p>
             
-            <div className="form-group">
-              <label>Selecciona tu meta principal:</label>
-              <select
-                value={formData.mainGoal}
-                onChange={(e) => handleInputChange('mainGoal', e.target.value)}
-                required
-              >
-                <option value="">Selecciona una opción</option>
-                {goals.map(goal => (
-                  <option key={goal} value={goal}>{goal}</option>
-                ))}
-              </select>
-            </div>
+            {/* Meta 1 (Principal) */}
+            <GoalSelector
+              label="Meta 1 (principal)"
+              value={formData.goals.primary}
+              onChange={(goalId) => handleGoalChange('primary', goalId)}
+              disabledGoalIds={[]}
+            />
 
-            <h3>Metas Adicionales (Opcional)</h3>
-            <p>¿Tienes otras metas que te gustaría alcanzar? Puedes añadir hasta 2 metas adicionales.</p>
-            
-            {formData.additionalGoals.map((additionalGoal, index) => (
-              <div key={index} className="additional-goal-container">
-                <div className="additional-goal-header">
-                  <h4>Meta {index + 2}</h4>
-                  <button 
-                    type="button" 
-                    className="btn-remove-goal"
-                    onClick={() => removeAdditionalGoal(index)}
-                  >
-                    ✕
-                  </button>
-                </div>
-                
-                <div className="form-group">
-                  <label>Selecciona tu meta adicional:</label>
-                  <select
-                    value={additionalGoal.goal}
-                    onChange={(e) => updateAdditionalGoal(index, 'goal', e.target.value)}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    {Object.values(SECONDARY_GOALS).map(goal => (
-                      <option key={goal} value={goal}>{goal}</option>
-                    ))}
-                  </select>
-                </div>
+            {/* Meta 2 (Opcional) */}
+            <GoalSelector
+              label="Meta 2 (opcional)"
+              value={formData.goals.secondary}
+              onChange={(goalId) => handleGoalChange('secondary', goalId)}
+              disabledGoalIds={[formData.goals.primary].filter(Boolean)}
+              highlightId={suggestionForMeta2}
+            />
 
-                {additionalGoal.goal === SECONDARY_GOALS.SPECIFIC_SPORT && (
-                  <div className="form-group">
-                    <label>¿Qué deporte específico?</label>
-                    <input
-                      type="text"
-                      value={additionalGoal.sport}
-                      onChange={(e) => updateAdditionalGoal(index, 'sport', e.target.value)}
-                      placeholder="Ej: Fútbol, Baloncesto, Tenis..."
-                    />
-                  </div>
-                )}
+            {/* Meta 3 (Opcional) */}
+            <GoalSelector
+              label="Meta 3 (opcional)"
+              value={formData.goals.tertiary}
+              onChange={(goalId) => handleGoalChange('tertiary', goalId)}
+              disabledGoalIds={[formData.goals.primary, formData.goals.secondary].filter(Boolean)}
+              highlightId={suggestionForMeta3}
+            />
+
+            {/* Aviso de conflictos */}
+            {hasGoalConflict && (
+              <div className="goal-warning">
+                ⚠️ Estas metas pueden competir entre sí. Te recomendaremos micro-ciclos y métricas realistas.
+              </div>
+            )}
+
+            {/* Conflictos suaves (avisos no bloqueantes) */}
+            {softConflicts.length > 0 && softConflicts.map((conflict, index) => (
+              <div key={index} className="goal-warning">
+                ⚠️ {conflict}
               </div>
             ))}
 
-            {formData.additionalGoals.length < 2 && (
-              <div className="add-goal-container">
-                <button 
-                  type="button" 
-                  className="btn-add-goal"
-                  onClick={addAdditionalGoal}
-                >
-                  + Añadir Meta Adicional
-                </button>
+            {/* Subformulario de Rehabilitación */}
+            {hasRehabGoal && (
+              <div className="rehab-form-container">
+                <h3>Información de la Lesión</h3>
+                
+                <div className="form-group">
+                  <label>Parte afectada:</label>
+                  <select
+                    value={formData.rehab.bodyPart}
+                    onChange={(e) => handleRehabChange('bodyPart', e.target.value)}
+                    required
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {bodyPartOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                  {formData.rehab.notice && (
+                    <small className="notice-warning">{formData.rehab.notice}</small>
+                  )}
+                </div>
+
+                {formData.rehab.bodyPart && formData.rehab.bodyPart !== '' && (
+                  <>
+                    <div className="form-group">
+                      <label>Severidad:</label>
+                      <select
+                        value={formData.rehab.severity}
+                        onChange={(e) => handleRehabChange('severity', e.target.value)}
+                        required
+                      >
+                        <option value="">Selecciona una opción</option>
+                        {severityOptions.map(option => (
+                          <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Tiempo desde la lesión:</label>
+                      <div className="field-inline">
+                        <input
+                          type="number"
+                          min="1"
+                          value={formData.rehab.timeSince.value}
+                          onChange={(e) => handleRehabNestedChange('timeSince', { value: e.target.value, unit: formData.rehab.timeSince.unit })}
+                          placeholder="0"
+                          required
+                          style={{ flex: 1 }}
+                        />
+                        <select
+                          value={formData.rehab.timeSince.unit}
+                          onChange={(e) => handleRehabNestedChange('timeSince', { value: formData.rehab.timeSince.value, unit: e.target.value })}
+                          style={{ flex: 1 }}
+                        >
+                          {timeUnitOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="rehab-grid">
+                      <div className="form-group">
+                        <label>Lado afectado:</label>
+                        <select
+                          value={formData.rehab.side}
+                          onChange={(e) => handleRehabChange('side', e.target.value)}
+                          required
+                        >
+                          <option value="">Selecciona una opción</option>
+                          {sideOptions.map(option => (
+                            <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Lado dominante (opcional):</label>
+                        <select
+                          value={formData.rehab.dominantSide}
+                          onChange={(e) => handleRehabChange('dominantSide', e.target.value)}
+                        >
+                          <option value="">Selecciona una opción</option>
+                          {dominantSideOptions.map(option => (
+                            <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Dolor (NRS 0-10): {formData.rehab.painNRS}</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        value={formData.rehab.painNRS}
+                        onChange={(e) => handleRehabChange('painNRS', parseInt(e.target.value))}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={formData.rehab.swelling}
+                          onChange={(e) => handleRehabChange('swelling', e.target.checked)}
+                        />
+                        <span>¿Hay edema (hinchazón)?</span>
+                      </label>
+                    </div>
+
+                    <div className="rehab-grid">
+                      <div className="form-group">
+                        <label>Limitación de Rango de Movimiento:</label>
+                        <select
+                          value={formData.rehab.romLimitation}
+                          onChange={(e) => handleRehabChange('romLimitation', e.target.value)}
+                          required
+                        >
+                          <option value="">Selecciona una opción</option>
+                          {romLimitationOptions.map(option => (
+                            <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Inestabilidad:</label>
+                        <select
+                          value={formData.rehab.instability}
+                          onChange={(e) => handleRehabChange('instability', e.target.value)}
+                          required
+                        >
+                          <option value="">Selecciona una opción</option>
+                          {instabilityOptions.map(option => (
+                            <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Limitaciones funcionales:</label>
+                      <div className="preferences-grid">
+                        {functionalLimitsOptions.map(option => (
+                          <label key={option} className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={formData.rehab.functionalLimits.includes(option)}
+                              onChange={(e) => handleFunctionalLimitsChange(option, e.target.checked)}
+                            />
+                            <span>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Indicaciones médicas recibidas:</label>
+                      <textarea
+                        value={formData.rehab.medicalIndications}
+                        onChange={(e) => handleRehabChange('medicalIndications', e.target.value)}
+                        placeholder="Ej: Reposo relativo, fisioterapia, evitar carga..."
+                        rows="3"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Detalles adicionales:</label>
+                      <textarea
+                        value={formData.rehab.details}
+                        onChange={(e) => handleRehabChange('details', e.target.value)}
+                        placeholder="Información adicional sobre tu lesión..."
+                        rows="3"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Banderas rojas (signos de alarma):</label>
+                      <div className="preferences-grid">
+                        {redFlagsOptions.map(option => (
+                          <label key={option} className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={formData.rehab.redFlags.includes(option)}
+                              onChange={(e) => handleRedFlagsChange(option, e.target.checked)}
+                            />
+                            <span>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {formData.rehab.redFlags.length > 0 && (
+                        <div className="alert-blocking">
+                          Se detectaron signos de alarma. Por tu seguridad, te recomendamos consultar con un profesional de salud antes de continuar.
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={formData.rehab.hasMedicalClearance}
+                          onChange={(e) => handleRehabChange('hasMedicalClearance', e.target.checked)}
+                          required
+                        />
+                        <span>Confirmo que cuento con autorización médica para iniciar un plan de recuperación supervisado.</span>
+                      </label>
+                    </div>
+
+                    <small style={{ color: '#6b7280', fontSize: '0.85rem', display: 'block', marginTop: '8px' }}>
+                      Este módulo no reemplaza la evaluación de un profesional. Usa la información como guía general.
+                    </small>
+                  </>
+                )}
               </div>
             )}
+
+            {/* Subformulario de Deporte Específico */}
+            {hasSportGoal && (
+              <div className="sport-form-container">
+                <SportForm
+                  value={formData.sport}
+                  onChange={handleSportChange}
+                  rehabSeverity={formData.rehab?.severity}
+                />
+              </div>
+            )}
+
+            {/* Subformulario de Rendimiento Sexual */}
+            {hasSexualGoal && (
+              <div className="sexual-performance-form-container">
+                <SexualPerformanceForm
+                  value={formData.sexual}
+                  onChange={handleSexualChange}
+                />
+              </div>
+            )}
+
           </div>
         );
 
@@ -730,19 +1301,12 @@ const OnboardingForm = () => {
                <h3>Resumen de tu perfil:</h3>
                <p><strong>Nombre:</strong> {formData.profileName}</p>
                <p><strong>Sexo:</strong> {formData.gender}</p>
-               <p><strong>Objetivo Principal:</strong> {formData.mainGoal}</p>
-               {formData.additionalGoals.length > 0 && (
-                 <div>
-                   <p><strong>Metas Adicionales:</strong></p>
-                   <ul>
-                     {formData.additionalGoals.map((goal, index) => (
-                       <li key={index}>
-                         {goal.goal}
-                         {goal.sport && ` - ${goal.sport}`}
-                       </li>
-                     ))}
-                   </ul>
-                 </div>
+               <p><strong>Meta Principal:</strong> {getGoalById(formData.goals.primary)?.label || 'No seleccionada'}</p>
+               {formData.goals.secondary && (
+                 <p><strong>Meta 2:</strong> {getGoalById(formData.goals.secondary)?.label || formData.goals.secondary}</p>
+               )}
+               {formData.goals.tertiary && (
+                 <p><strong>Meta 3:</strong> {getGoalById(formData.goals.tertiary)?.label || formData.goals.tertiary}</p>
                )}
                <p><strong>Deporte Favorito:</strong> {formData.favoriteSport || 'No especificado'}</p>
                {/*  :::::::::::::::::::::::::::: Implementación menstruación ::::::::::::::::::::::::::::  */}
@@ -794,13 +1358,16 @@ const OnboardingForm = () => {
            <button 
              className="btn btn-primary" 
              onClick={nextStep}
-             disabled={
-               (currentStep === 0 && !formData.profileName) ||
-               (currentStep === 1 && !formData.mainGoal) ||
-               (currentStep === 2 && (!formData.gender || !formData.age || !formData.initialWeight || !formData.height)) ||
-               (currentStep === 3 && !formData.experienceLevel) ||
-               (currentStep === 4 && formData.exercisePreferences.length === 0)
-             }
+            disabled={
+              (currentStep === 0 && !formData.profileName) ||
+              (currentStep === 1 && (!formData.goals.primary || 
+                (hasRehabGoal && !isRehabValid()) || 
+                (hasSportGoal && !isSportValid()) || 
+                (hasSexualGoal && !isSexualValid()))) ||
+              (currentStep === 2 && (!formData.gender || !formData.age || !formData.initialWeight || !formData.height)) ||
+              (currentStep === 3 && !formData.experienceLevel) ||
+              (currentStep === 4 && formData.exercisePreferences.length === 0)
+            }
            >
              Siguiente
            </button>
@@ -808,7 +1375,8 @@ const OnboardingForm = () => {
           <button 
             className="btn btn-success" 
             onClick={handleSubmit}
-            disabled={!formData.motivation || isSubmitting}
+            disabled={!formData.motivation || isSubmitting || 
+              (hasRehabGoal && formData.rehab.redFlags.length > 0)}
           >
             {isSubmitting ? 'Guardando...' : '¡Comenzar mi viaje!'}
           </button>

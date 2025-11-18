@@ -110,6 +110,33 @@ class ApiService {
     });
   }
 
+  // Guardar datos de onboarding
+  // El payload debe incluir:
+  // - goals: { primary, secondary, tertiary } (primary es obligatorio)
+  // - rehab: objeto con información de rehabilitación (si alguna meta es 'rehab')
+  // - sport: objeto con información del deporte (si alguna meta es 'sport_specific')
+  // - sexual: objeto con información de rendimiento sexual (si alguna meta es 'sexual_performance')
+  async saveOnboardingData(data) {
+    // Asegurar que el payload incluya goals, rehab, sport y sexual si aplican
+    const payload = {
+      ...data,
+      // Estructura explícita de goals
+      goals: data.goals || {
+        primary: data.mainGoal || '',
+        secondary: '',
+        tertiary: ''
+      },
+      // Incluir rehab solo si existe y tiene datos relevantes
+      ...(data.rehab && Object.keys(data.rehab).length > 0 ? { rehab: data.rehab } : {}),
+      // Incluir sport solo si existe (puede ser null si no aplica)
+      ...(data.sport !== undefined ? { sport: data.sport } : {}),
+      // Incluir sexual solo si existe (puede ser null si no aplica)
+      ...(data.sexual !== undefined ? { sexual: data.sexual } : {})
+    };
+
+    return this.makeRequest('/users/onboarding', 'POST', payload);
+  }
+
   // Simulación de datos para desarrollo
   getMockUserData(userId) {
     return {

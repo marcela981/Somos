@@ -532,6 +532,93 @@
   margin-bottom: 1rem;
 }
 
+/* Estilos para rehab */
+.notice-warning {
+  color: #b45309;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.alert-blocking {
+  background: #FEF2F2;
+  color: #991B1B;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 8px 0;
+  border: 1px solid #FCA5A5;
+}
+
+.rehab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.field-inline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rehab-form-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--background-light);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+/* Estilos para el sistema de metas */
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.goal-chip {
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.goal-chip[aria-selected="true"] {
+  outline: 2px solid #3b82f6;
+}
+
+.goal-chip[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.goal-hint {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.goal-warning {
+  background: #FFF7ED;
+  color: #B45309;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 8px;
+  border: 1px solid #FED7AA;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.disclaimer {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
 /*  :::::::::::::::::::::::::::: Implementación menstruación ::::::::::::::::::::::::::::  */
 /* Asegurar que los contenedores de metas adicionales no causen saltos */
 /* .additional-goal-container {
